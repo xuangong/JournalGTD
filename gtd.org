@@ -1,0 +1,9 @@
+* Workspace
+
+** TODO [#A] Prectice dancing and rehearsal.                           :work:
+   DEADLINE: <2016-08-30 Tue> SCHEDULED: <2016-08-30 Tue>
+
+** TODO [#A] Ask them calculate DSQ and Allan to check revenue data. :someday:work:
+
+** STARTED [#A] Fork event to AES [VSO]                                :work:
+   DEADLINE: <2016-08-31 Wed> SCHEDULED: <2016-08-30 Tue>
