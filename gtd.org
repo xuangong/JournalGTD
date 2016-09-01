@@ -1,9 +1,330 @@
 * Workspace
 
-** TODO [#A] Prectice dancing and rehearsal.                           :work:
-   DEADLINE: <2016-08-30 Tue> SCHEDULED: <2016-08-30 Tue>
+** DONE [#A] Prectice dancing and rehearsal.                           :work:
+   CLOSED: [2016-09-01 Thu 08:12] DEADLINE: <2016-08-30 Tue> SCHEDULED: <2016-08-30 Tue>
+   :LOGBOOK:
+   - State "DONE"       from "STARTED"    [2016-09-01 Thu 08:12]
+   :END:
 
-** TODO [#A] Ask them calculate DSQ and Allan to check revenue data. :someday:work:
+** STARTED [#A] Ask them calculate DSQ and Allan to check revenue data. :someday:work:
+   DEADLINE: <2016-09-02 Fri> SCHEDULED: <2016-09-05 Mon>
 
-** STARTED [#A] Fork event to AES [VSO]                                :work:
-   DEADLINE: <2016-08-31 Wed> SCHEDULED: <2016-08-30 Tue>
+** DONE [#A] Fork event to AES [VSO]                                   :work:
+   CLOSED: [2016-09-01 Thu 08:16] DEADLINE: <2016-08-31 Wed> SCHEDULED: <2016-08-30 Tue>
+   :LOGBOOK:
+   - State "DONE"       from "STARTED"    [2016-09-01 Thu 08:16]
+   :END:
+
+** DONE [#A] Git From the Bits Up                                 :git:video:
+   CLOSED: [2016-09-01 Thu 08:59]
+   :LOGBOOK:
+   - State "DONE"       from "STARTED"    [2016-09-01 Thu 08:59]
+   - Note taken on [2016-09-01 Thu 08:58] \\
+     git log --oneline
+     git checkout unicorns
+     git rebase master
+
+     git rebase -i HEAD~3
+     -- split one commit to multi
+     git commit --amend
+     git rebase --continue
+
+     -- undo the changes that were just replayed
+     git reset HEAD^
+     -- since we don't specify "--hard", files stay in working directory
+     git add sth
+     git commit -m
+     git add sth2
+     git commit -m
+
+     git rebase --continue
+     git log --oneline
+
+     -- squash commits into one commit
+     git rebase -i HEAD~4
+     -- change multi commit messsages into one and git will merge them automatically
+
+     1. pro aliases & prompt [awesome prompt](https://github.com/nojhan/liquidprompt)
+     2. hiding stuff
+     3. conflict resolution tips
+     4. polish your code
+     5. prevent tmpering
+     6. project dependencies
+
+     Aliases are stored in .gitconfig:
+     alias ls = log --online
+     -- amend the last commit with everything I have here uncommitted and new
+     alias caa = commit -a -amend -C HEAD
+     -- for multiple commands or complex parameters use a branch function! you can escape to a shell with ! like this
+     my_alias = "!f() { <command> }; f"
+     -- some useful shortcuts and variables, more in any bash manual
+     $1 - first command line parameter
+     $2 - second command line parameter
+     $@ - all command line parameters passed
+     -- cool cool things, for example add a bitbucket remote
+     git remote add $1 https://bitbucket.org/$2.git;
+     ra = "!f() { \
+         git remote add $1 https://bitbucket.org/$2.git; \
+     }; f"
+
+     -- different from .gitignore, it hides committed files
+     -- very useful with git-svn
+     git update-index --assume-unchanged <file>
+     -- revert it with:
+     git update-index --no-assume-unchanged <file>
+     -- list assumed unchanged files
+     -- useful as alias (see alias list from before)
+     git ls-files -v | grep ^hard
+
+     -- conflict resolution tips
+     -- basic for easy conflict resolution
+     git checkout --ours/--theirs <file>
+     git add <file>
+     -- add these to [alias] in .gitignore
+     ours = "!f{} { \
+         git checkout --ours $@ && git add $@; \
+     }; f"
+     -- reuse recorded resolution will help you when dealing with repetitive and similar merge conflicts
+     -- turns it on and forget about it
+     git config --global rerere.enabled true
+     -- rebase: It's a way to replay commits, one by one, on top of a branch
+     -- autosquash
+     -- Automatically modify the todo list of "rebase --interactive" by annotating commits
+     git config --global rebase.autosquash true
+     -- you can prepared commit messages with:
+     git commit -m "squash! ..."
+     git commit -m "fixup! ..."
+     git commit -m "reword! ...
+     etc..
+     rebase task list will be then prepopulated
+
+     -- lock down your repo, reject force push
+     -- edit .git/config in the [receive] section:
+     # no rewriting history
+     denyNonFastForwards = true
+
+     # no deleting history
+     denyDeletes = true
+     # check object consistency
+     fsckObjects = true
+
+     -- Impersonating authors is easy
+     git commit --author "Elvis <elvis@graceland.net>" -m "I'm elvis"
+
+     -- finally you can sign/verify tags
+     -- sign a tag with your GPG key
+     git tag -s <tag_name> -m "message"
+     -- verifies that the signature is valid
+     git tag -v <tag_name>
+
+     -- Harden up by signing things, simple gpg commands to get you started:
+     -- generate your GPG key
+     gpg --gen-key
+     -- List your keys
+     gpg -k
+     -- export your key
+     gpg -a --export <keyid>
+
+     -- Hide files in raw objects
+     -- the way the linux kernel hackers do it
+     -- actually -w writes into the object db, remember to associate a tag to it or it will be grabage collected
+     git hash-object -w <file>
+
+     -- Store your signature in git
+     -- simple! Add a tag referencing your public key
+     -- store your public key in a raw object
+     gpg -a --export <keyid> | \
+     git hash-object -w --stdin
+
+     -- tag the raw object with a label, "65704f3..." for raw object id
+     git tag nicks-key 65704f3...
+
+     -- import other public keys
+     git cat-file -p tims-key | gpg --import
+
+     -- Another possibility: use git submodule
+     -- Another possibility: use git subtree
+
+     ---- bash watch command
+     cd directory
+     while :
+     do
+     clear
+     tree .git
+     sleep 1
+     done
+
+     ---- git loglive watcher script
+     while :
+     do
+         clear
+         git --no-pager log --graph --pretty=oneline --abbrev-commit --decorate --all $*
+         sleep 1
+     done
+
+     ```
+     ➜  gitlearning git status
+     fatal: Not a git repository (or any of the parent directories): .git
+     ("objects" directory stores all objects, "refs" directory stores )
+     ➜  gitlearning mkdir -p .git/objects .git/refs
+     ➜  gitlearning echo "ref: refs/heads/master" > .git/HEAD
+     ➜  gitlearning git:(master) git status
+     On branch master
+
+     Initial commit
+
+     nothing to commit (create/copy files and use "git add" to track)
+     (Add a blob object, equvalent to "git add" command)
+     ➜  gitlearning git:(master) echo "So. The Spear-Danes in days gone by and the kings who ruled them had courage and greatness. We have heard of these princes' noble campaigns." | git hash-object -w --stdin
+     15b8414deb3b35d281e18788a13c0c8f1956b28d
+     ➜  gitlearning git:(master) git cat-file -p 15b8
+     So. The Spear-Danes in days gone by and the kings who ruled them had courage and greatness. We have heard of these princes' noble campaigns.
+     ➜  gitlearning git:(master) git cat-file -t 15b8
+     blob
+     ➜  gitlearning git:(master) git cat-file -s 15b8
+     141
+     (Adding index represents modify the stage tree in working area. Then git will deem there is a file under version control but the file has been removed.)
+     ➜  gitlearning git:(master) git update-index --add --cacheinfo 100644 15b8414deb3b35d281e18788a13c0c8f1956b28d beowulf.txt
+     ➜  gitlearning git:(master) ✗ git status
+     On branch master
+
+     Initial commit
+
+     Changes to be committed:
+       (use "git rm --cached <file>..." to unstage)
+
+             new file:   beowulf.txt
+
+     Changes not staged for commit:
+       (use "git add/rm <file>..." to update what will be committed)
+       (use "git checkout -- <file>..." to discard changes in working directory)
+
+             deleted:    beowulf.txt
+
+     (Add a tree object, pointing to the blob mentioned before.)
+     ➜  gitlearning git:(master) ✗ git write-tree 15b8414deb3b35d281e18788a13c0c8f1956b28d
+     8f5ff31e3f58b7e83a467c9224c923748be5c658
+     ➜  gitlearning git:(master) ✗ git cat-file -t 8f5f
+     tree
+     ➜  gitlearning git:(master) ✗ git cat-file -s 8f5f
+     39
+     ➜  gitlearning git:(master) ✗ git cat-file -p 8f5f
+     100644 blob 15b8414deb3b35d281e18788a13c0c8f1956b28d    beowulf.txt
+     ➜  gitlearning git:(master) ✗ git commit-tree 8f5ff31e3f58b7e83a467c9224c923748be5c658 -m "Hipster commit"
+     3077a6f346476b51848885efe1f3c2949badb7f7
+     ➜  gitlearning git:(master) ✗ git cat-file -t 3077
+     commit
+     ➜  gitlearning git:(master) ✗ git cat-file -s 3077
+     223
+     ➜  gitlearning git:(master) ✗ git cat-file -p 3077
+     tree 8f5ff31e3f58b7e83a467c9224c923748be5c658
+     author xanzh <xanzh@stcvm-linux43.fareast.corp.microsoft.com> 1470557621 -0700
+     committer xanzh <xanzh@stcvm-linux43.fareast.corp.microsoft.com> 1470557621 -0700
+
+     Hipster commit
+     ➜  gitlearning git:(master) ✗ git status
+     On branch master
+
+     Initial commit
+
+     Changes to be committed:
+       (use "git rm --cached <file>..." to unstage)
+
+             new file:   beowulf.txt
+
+     Changes not staged for commit:
+       (use "git add/rm <file>..." to update what will be committed)
+       (use "git checkout -- <file>..." to discard changes in working directory)
+
+             deleted:    beowulf.txt
+     (Create a master file in .git/refs/heads represents a branch. Also create .git/logs/refs/heads/master file.)
+     ➜  gitlearning git:(master) ✗ git update-ref refs/heads/master 3077a6f346476b51848885efe1f3c2949badb7f7
+     ➜  gitlearning git:(master) ✗ git status
+     On branch master
+     Changes not staged for commit:
+       (use "git add/rm <file>..." to update what will be committed)
+       (use "git checkout -- <file>..." to discard changes in working directory)
+
+             deleted:    beowulf.txt
+
+     no changes added to commit (use "git add" and/or "git commit -a")
+     ➜  gitlearning git:(master) ✗ cat .git/refs/heads/master
+     3077a6f346476b51848885efe1f3c2949badb7f7
+     ➜  gitlearning git:(master) ✗ git show HEAD
+
+     commit 3077a6f346476b51848885efe1f3c2949badb7f7
+     Author: xanzh <xanzh@stcvm-linux43.fareast.corp.microsoft.com>
+     Date:   Sun Aug 7 01:13:41 2016 -0700
+
+         Hipster commit
+
+     diff --git a/beowulf.txt b/beowulf.txt
+     new file mode 100644
+     index 0000000..15b8414
+     --- /dev/null
+     +++ b/beowulf.txt
+     @@ -0,0 +1 @@
+     +So. The Spear-Danes in days gone by and the kings who ruled them had courage and greatness. We have heard of these princes' noble campaigns.
+     (END)
+     ➜  gitlearning git:(master) ✗ ls
+     ➜  gitlearning git:(master) ✗
+     (HEAD tells git which branch is wanted. And -- tells git get the content from repo but not into my working area.)
+     ➜  gitlearning git:(master) ✗ git checkout HEAD -- beowulf.txt
+     ➜  gitlearning git:(master) git status
+     On branch master
+     nothing to commit, working directory clean
+     ➜  gitlearning git:(master) ls
+     beowulf.txt
+     ➜  gitlearning git:(master) git reflog
+     3077a6f HEAD@{0}:
+     (END)
+     ➜  gitlearning git:(master) echo "There was Shielf Sheafson, scourge of many tribes" >> beowulf.txt
+     ➜  gitlearning git:(master) ✗ cat beowulf.txt
+     So. The Spear-Danes in days gone by and the kings who ruled them had courage and greatness. We have heard of these princes' noble campaigns.
+     There was Shielf Sheafson, scourge of many tribes
+     ➜  gitlearning git:(master) ✗
+     (Change the git editor to vim)
+     ➜  gitlearning git:(master) git config --global core.editor vim
+     ...
+     ...
+     ➜  gitlearning git:(master) git --no-pager log --graph --pretty=oneline --abbrev-commit --decorate --all $*
+     * 56bf3e7 (HEAD -> master) Wrecker
+     * 243b768 Bug
+     * 916953d Shield sheafson
+     * 3077a6f Hipster commit
+
+     ...
+     ...
+     ```
+
+     Functional patterns
+     Core principles of FP design
+     - Functions, types, composition
+     Functions as parameters
+     - Functions as interfaces
+     - Partial application & dependency injection
+     - Continuations, chaining & the pyramid of doom
+     Monads
+     - Error handling, Async
+     Maps
+     - Dealing with wrapped data
+     - Functors
+     Monoids
+     - Aggregating data and operations
+   :END:
+
+** TODO [#B] 'Rob Pike - Concurrency is not parallelism'              :video:
+
+** TODO [#B] Advanced GIT for Developers - Lorna Jane Mitchell - Laracon EU 2015 :git:video:
+
+** TODO [#B] Advanced techniques for concurrency & memory management :git:video:
+
+** TODO [#B] Asynchronous execution in Android - Anders Goransson :android:video:
+
+** TODO [#B] CppCon 2014 Chandler Carruth Efficiency with Algorithms, Performance with Data Structures :cpp:video:
+
+** TODO [#B] 机器学习基石                                          :ml:video:
+
+** TODO [#B] 机器学习技法                                          :ml:video:
+
+** TODO [#B] LinuxCast                                          :linux:video:
